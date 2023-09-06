@@ -72,7 +72,7 @@
             }
         }
     } else {
-        mazeName = urlParams.has('mazeName') ? '/mazes/named/' + urlParams.get('mazeName') : '/mazes/daily/' + getDateString();
+        mazeName = urlParams.has('mazeName') ? './mazes/named/' + urlParams.get('mazeName') : './mazes/daily/' + getDateString();
 
         fetch(mazeName + '.txt')
             .then(response => response.text())
