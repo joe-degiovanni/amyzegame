@@ -1,0 +1,83 @@
+body {
+    width: 100%;
+    font-family: Lato, sans-serif;
+    background-color: black;
+    color: white;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+.maze, .share-container {
+    margin: auto;
+    max-width: 500px;
+}
+
+.row {
+    display: flex;
+}
+
+.cell {
+    text-align: center;
+    flex: 5;
+    padding: 0px;
+    margin: 0px;
+    background-color: #555;
+    font-size: 1.6em;
+    font-weight: bolder;
+}
+
+.correct {
+    background-color: #050;
+}
+
+.wrong-down {
+    border-bottom: 3px solid red !important;
+}
+
+.wrong-right {
+    border-right: 3px solid red !important
+}
+
+.wrong-left {
+    border-left: 3px solid red !important;
+}
+
+.wrong-up {
+    border-top: 3px solid red !important;
+}
+
+.empty-tile {
+    flex: 5;
+    text-align: center;
+    padding: 20px;
+    margin: 10px;
+}
+
+#share-button {
+    visibility: hidden;
+}
+
+#selected {
+    border: 2px dashed #808;
+}
+
+#finish {
+    border: 2px dashed white !important;
+    background:  repeating-linear-gradient(
+            45deg,
+            green,
+            green 10px,
+            lime 10px,
+            lime 20px
+    );
+}
+
+#controls {
+    font-size: 2em;
+    text-align: center;
+    max-width: 500px;
+    margin: auto;
+}
+    

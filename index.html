@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>amyzgame</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<h1>AMYZGAME</h1>
+<div id="main" class="maze">
+    <div class="row">
+        <div class="cell correct">a</div>
+        <div class="cell correct">m</div>
+        <div class="cell correct">y</div>
+    </div>
+    <div class="row">
+        <div class="cell">a</div>
+        <div class="cell">g</div>
+        <div class="cell correct" id="selected">z</div>
+    </div>
+    <div class="row">
+        <div class="cell">m</div>
+        <div id="finish" class="cell">e</div>
+        <div class="cell wrong">!</div>
+    </div>
+
+</div>
+<div id="controls">
+    <button onclick="processGuess('<')">⬅️</button>
+    <button onclick="processGuess('^')">⬆️</button>
+    <button onclick="processGuess('v')">⬇️</button>
+    <button onclick="processGuess('>')">➡️</button>
+</div>
+<div class="share-container">
+    <pre id="share"></pre>
+    <button id="share-button" onclick="navigator.clipboard.writeText(document.getElementById('share').innerText)">Copy Results to Clipboard</button>
+</div>
+<h1>Solution</h1>
+<h2 id="output"></h2>
+<h1>Strike Count</h1>
+<h2 id="strike-count">0</h2>
+<h1>Timer</h1>
+<h2 id="timer"></h2>
+<script src="js/maze-file-generator.js"></script>
+<script>
+    let solution = null;
+    let startCoord = null;
+    let endCoord = null;
+    let currentCoord = null;
+    let previousCoord = null;
+    let guessCoord = null;
+    let mazeName;
+    let moves = 0;
+    let gameOver = false;
+    let timerId = null;
+    const mazeContainer = document.getElementById("main");
+
+    // get mazeName from url query params
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('solutionText')) {
+        let success = false;
+        let tries = 0;
+        while(!success && tries < 25) {
+            tries++;
+            try {
+                var randomMaze = new Maze(urlParams.get('solutionText'));
+                var mazeText = randomMaze.toString();
+                loadMaze(mazeText);
+                success = true;
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    } else {
+        mazeName = urlParams.has('mazeName') ? '/mazes/named/' + urlParams.get('mazeName') : '/mazes/daily/' + getDateString();
+
+        fetch(mazeName + '.txt')
+            .then(response => response.text())
+            .then(loadMaze);
+    }
+    
+    function startTimer() {
+        let timer = document.getElementById('timer');
+        let startTime = new Date();
+        timerId = setInterval(() => {
+            let time = new Date() - startTime;
+            let minutes = Math.floor(time / 60000);
+            let seconds = Math.floor((time % 60000) / 1000);
+            timer.innerText = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+        }, 1000);
+    }
+    
+    function stopTimer() {
+        clearInterval(timerId);
+    }
+
+
+    function loadMaze(text) {
+        gameOver = localStorage.getItem(mazeName + '-gameOver') === 'true';
+        if(gameOver) {
+            document.getElementById('output').innerText = localStorage.getItem(mazeName + '-solution');
+            document.getElementById('strike-count').innerText = localStorage.getItem(mazeName + '-strikeCount');
+            document.getElementById('main').innerHTML = localStorage.getItem(mazeName + '-state');
+            document.getElementById('timer').innerHTML = localStorage.getItem(mazeName + '-timer');
+            endGame();
+            return;
+        }
+        
+        let divider = "---";
+        let dividerStartIndex = text.indexOf(divider);
+        let dividerEndIndex = dividerStartIndex + divider.length;
+        let lastDividerStartIndex = text.lastIndexOf(divider);
+        let lastDividerEndIndex = lastDividerStartIndex + divider.length;
+
+        let coords = text.substring(0, dividerStartIndex).trim().split('\n');
+        startCoord = new Coord(coords[0]);
+        currentCoord = startCoord;
+        endCoord = new Coord(coords[1]);
+
+        let mazeText = text.substring(dividerEndIndex, lastDividerStartIndex).trim();
+        solution = text.substring(lastDividerEndIndex).trim();
+
+        let lines = mazeText.split('\n');
+
+        mazeContainer.innerHTML = null;
+
+        lines.forEach(line => drawRow(line.trim()));
+
+        let startCell = document.getElementsByClassName('row')[startCoord.y].children[startCoord.x];
+        startCell.classList.add('correct');
+        startCell.setAttribute('id', 'selected');
+        document.getElementById('output').innerText = startCell.innerText;
+
+        let endCell = document.getElementsByClassName('row')[endCoord.y].children[endCoord.x];
+        endCell.classList.add('correct');
+        endCell.setAttribute('id', 'finish');
+        startTimer();
+    }
+
+    function getCurrentCell() {
+        return document.getElementsByClassName('row')[currentCoord.y].children[currentCoord.x];
+    }
+
+    function endGame() {
+        gameOver = true;
+        localStorage.setItem(mazeName + '-strikeCount', document.getElementById('strike-count').innerText);
+        localStorage.setItem(mazeName + '-gameOver', gameOver);
+        localStorage.setItem(mazeName + '-state', document.getElementById('main').innerHTML);
+        localStorage.setItem(mazeName + '-solution', document.getElementById('output').innerText);
+        localStorage.setItem(mazeName + '-timer', document.getElementById('timer').innerText);
+        clearInterval(timerId);
+        setShareContent();
+    }
+    
+    function setShareContent() {
+        let strikeCount = parseInt(document.getElementById('strike-count').innerText);
+        let time = document.getElementById('timer').innerText;
+        let text = `I solved the amyzegame '${mazeName.replace(/\/mazes\/.*\//, '')}' maze in ${time} with ${strikeCount} strikes!`;
+        let emoji = strikeCount === 0 ? '🥳' : strikeCount === 1 ? '😎' : strikeCount === 2 ? '😐' : strikeCount === 3 ? '😬' : strikeCount === 4 ? '😡' : '🤬';
+        document.getElementById('share').innerText = text + emoji + `\n\nTry to beat me\n${document.URL}`;
+        document.getElementById('share-button').setAttribute('style', 'visibility: visible');
+    }
+
+    function processGuess(guess) {
+        if (gameOver) {
+            endGame();
+            return;
+        }
+
+        guessCoord = getGuessCoord(guess);
+
+        if (isGuessCorrect(guess)) {
+            moves++;
+            previousCoord = currentCoord;
+            currentCoord = guessCoord;
+
+            // remove the selected class from the previous cell
+            document.getElementById('selected').removeAttribute('id');
+
+            // set the current cell to selected
+            let currentCell = getCurrentCell();
+            currentCell.setAttribute('id', 'selected');
+            currentCell.classList.add('correct');
+
+            // add the letter to the output
+            let output = document.getElementById('output');
+            output.innerText = output.innerText + currentCell.innerText;
+
+            // check if the game is over
+            if(currentCoord.x === endCoord.x && currentCoord.y === endCoord.y) {
+                endGame();
+            }
+        } else {
+            let isGuessBackward = !!previousCoord && guessCoord.x === previousCoord.x && guessCoord.y === previousCoord.y;
+
+            if (!isGuessBackward) {
+                // increase the strike count
+                let strikeCount = document.getElementById('strike-count');
+                strikeCount.innerText = parseInt(strikeCount.innerText) + 1;
+
+                // change the border of the current cell to red on the edge of the wrong guess
+                getCurrentCell().classList.add(guess === '>' ? 'wrong-right' : guess === '<' ? 'wrong-left' : guess === 'v' ? 'wrong-down' : 'wrong-up');
+
+            }
+        }
+    }
+
+    function isGuessCorrect(guess) {
+        return solution[moves] === guess;
+    }
+
+    function getGuessCoord(guess) {
+        return new Coord(currentCoord.x + (guess === '>' ? 1 : guess === '<' ? -1 : 0) + ', ' + (currentCoord.y + (guess === 'v' ? 1 : guess === '^' ? -1 : 0)));
+    }
+
+    document.onkeydown = function (params) {
+        processGuess(getGuessFromKey(params.key));
+    }
+
+    function getGuessFromKey(key) {
+        switch (key) {
+            case "ArrowUp":
+                return '^';
+            case "ArrowDown":
+                return 'v';
+            case "ArrowLeft":
+                return '<';
+            case "ArrowRight":
+                return '>';
+        }
+    }
+
+    function getDateString() {
+        return new Date().toISOString().split('T')[0];
+    }
+
+    function drawRow(line) {
+        let row = document.createElement('div');
+        row.classList.add('row');
+
+        // create a cell for each letter in the line and add it to the row
+        for (let i = 0; i < line.length; i++) {
+            let cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.innerText = line[i];
+            row.appendChild(cell);
+        }
+
+        mazeContainer.appendChild(row);
+    }
+</script>
+
+</body>
+</html>
