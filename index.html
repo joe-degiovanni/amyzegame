@@ -237,16 +237,37 @@
     function drawRow(line) {
         let row = document.createElement('div');
         row.classList.add('row');
+        
+        let rowIndex = mazeContainer.children.length;
 
         // create a cell for each letter in the line and add it to the row
         for (let i = 0; i < line.length; i++) {
             let cell = document.createElement('div');
             cell.classList.add('cell');
             cell.innerText = line[i];
+            cell.onclick = function () {
+                processGuess(getGuessFromCell(rowIndex, i));
+            }
             row.appendChild(cell);
         }
 
         mazeContainer.appendChild(row);
+    }
+    
+    function getGuessFromCell(row, col) {
+        if(row === currentCoord.y) {
+            if(col > currentCoord.x) {
+                return '>';
+            } else {
+                return '<';
+            }
+        } else {
+            if(row > currentCoord.y) {
+                return 'v';
+            } else {
+                return '^';
+            }
+        }
     }
 </script>
 
