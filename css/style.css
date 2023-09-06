@@ -1,3 +1,31 @@
+@media (orientation: portrait) {
+    body {
+        font-size: 2em;
+    }
+    
+    .maze {
+        width: 100%;
+    }
+    
+    #share-button {
+        font-size: 1.5em;
+    }
+}
+
+@media (orientation: landscape) {
+    body {
+        font-size: 1em;
+    }
+    
+    .maze {
+        max-width: 800px;
+    }
+
+    #controls {
+        font-size: 2em;
+    }
+}
+
 body {
     width: 100%;
     font-family: Lato, sans-serif;
@@ -11,7 +39,6 @@ h1, h2 {
 
 .maze, .share-container {
     margin: auto;
-    max-width: 500px;
 }
 
 .row {
@@ -75,7 +102,6 @@ h1, h2 {
 }
 
 #controls {
-    font-size: 2em;
     text-align: center;
     max-width: 500px;
     margin: auto;
