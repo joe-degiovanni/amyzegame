@@ -129,5 +129,28 @@ class Maze {
     }
 }
 
-// var maze = new Maze('THEREWASANOLDLADYWHOSWALLOWEDAFLY');
-// console.log(maze.toString());
+
+function generateFutureMazes(futureMazes) {
+    let daysInFuture = 2;
+    futureMazes.forEach(text => {
+        let date = new Date();
+        date.setDate(date.getDate() + daysInFuture++);
+        let maze = new Maze(text);
+        let dataUrl = `data:text/plain;base64,${btoa(maze.toString())}`;
+        let link = document.createElement('a');
+        link.setAttribute('href', dataUrl);
+        // let fileName = `${date.getFullYear()}-0${date.getMonth() + 1}-0${date.getDate()}.txt`;
+        // create the file name based off the date with zero padding for months and days
+        let zeroPaddedMonth = ("00" + (date.getMonth() + 1)).slice(-2);
+        let zeroPaddedDay = ("00" + date.getDate()).slice(-2);
+        let fileName = `${date.getFullYear()}-${zeroPaddedMonth}-${zeroPaddedDay}.txt`;
+        link.setAttribute('download', fileName);
+        link.click();
+    });
+}
+
+// generateFutureMazes([
+//     'WHATABEAUTIFULDAY', 
+//     'THISGAMEISFUN', 
+//     'JOEISAWESOME',
+// ]);
