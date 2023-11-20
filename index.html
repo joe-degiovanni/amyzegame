@@ -175,7 +175,7 @@
         let strikeCount = parseInt(document.getElementById('strike-count').innerText);
         let time = document.getElementById('timer').innerText;
         let text = `I solved the amyzegame '${mazeName.replace(/\.\/mazes\/.*\//, '')}' maze in ${time} with ${strikeCount} strikes!`;
-        let emoji = strikeCount === 0 ? '🥳' : strikeCount === 1 ? '😎' : strikeCount === 2 ? '😐' : strikeCount === 3 ? '😬' : strikeCount === 4 ? '😡' : '🤬';
+        let emoji = strikeCount === 0 ? '🥳' : strikeCount === 1 ? '😎' : strikeCount === 2 ? '🙂' : strikeCount === 3 ? '😬' : strikeCount === 4 ? '😡' : '🤬';
         document.getElementById('share').innerText = text + emoji + `\n\nTry to beat me\n${document.URL}`;
         document.getElementById('share-button').setAttribute('style', 'visibility: visible');
     }
