@@ -60,7 +60,7 @@
     if (urlParams.has('solutionText')) {
         let success = false;
         let tries = 0;
-        while(!success && tries < 25) {
+        while (!success && tries < 25) {
             tries++;
             try {
                 var randomMaze = new Maze(urlParams.get('solutionText'));
@@ -78,7 +78,7 @@
             .then(response => response.text())
             .then(loadMaze);
     }
-    
+
     function startTimer() {
         let timer = document.getElementById('timer');
         let startTime = new Date();
@@ -93,7 +93,7 @@
 
     function loadMaze(text) {
         gameOver = localStorage.getItem(mazeName + '-gameOver') === 'true';
-        if(gameOver) {
+        if (gameOver) {
             document.getElementById('output').innerText = localStorage.getItem(mazeName + '-solution');
             document.getElementById('strike-count').innerText = localStorage.getItem(mazeName + '-strikeCount');
             document.getElementById('main').innerHTML = localStorage.getItem(mazeName + '-state');
@@ -101,7 +101,7 @@
             endGame();
             return;
         }
-        
+
         let divider = "---";
         let dividerStartIndex = text.indexOf(divider);
         let dividerEndIndex = dividerStartIndex + divider.length;
@@ -130,11 +130,34 @@
         let endCell = document.getElementsByClassName('row')[endCoord.y].children[endCoord.x];
         endCell.classList.add('correct');
         endCell.setAttribute('id', 'finish');
+
+        highlightNextGuessOptions();
+
         startTimer();
     }
 
     function getCurrentCell() {
         return document.getElementsByClassName('row')[currentCoord.y].children[currentCoord.x];
+    }
+
+    function highlightNextGuessOptions() {
+        // remove the validChoice class from all cells
+        let validChoices = document.getElementsByClassName('validChoice');
+        while (validChoices.length > 0) {
+            validChoices[0].classList.remove('validChoice');
+            validChoices = document.getElementsByClassName('validChoice');
+        }
+        let north = new Coord(currentCoord.x + ', ' + (currentCoord.y - 1));
+        let south = new Coord(currentCoord.x + ', ' + (currentCoord.y + 1));
+        let east = new Coord((currentCoord.x + 1) + ', ' + currentCoord.y);
+        let west = new Coord((currentCoord.x - 1) + ', ' + currentCoord.y);
+        [north, south, east, west].forEach(coord => {
+            if(coord.x < 0 || coord.y < 0) return;
+            let cell = document.getElementsByClassName('row')[coord.y].children[coord.x];
+            if (!cell.classList.contains('correct')) {
+                cell.classList.add('validChoice');
+            }
+        });
     }
 
     function endGame() {
@@ -147,7 +170,7 @@
         clearInterval(timerId);
         setShareContent();
     }
-    
+
     function setShareContent() {
         let strikeCount = parseInt(document.getElementById('strike-count').innerText);
         let time = document.getElementById('timer').innerText;
@@ -183,8 +206,10 @@
             output.innerText = output.innerText + currentCell.innerText;
 
             // check if the game is over
-            if(currentCoord.x === endCoord.x && currentCoord.y === endCoord.y) {
+            if (currentCoord.x === endCoord.x && currentCoord.y === endCoord.y) {
                 endGame();
+            } else {
+                highlightNextGuessOptions();
             }
         } else {
             let isGuessBackward = !!previousCoord && guessCoord.x === previousCoord.x && guessCoord.y === previousCoord.y;
@@ -237,7 +262,7 @@
     function drawRow(line) {
         let row = document.createElement('div');
         row.classList.add('row');
-        
+
         let rowIndex = mazeContainer.children.length;
 
         // create a cell for each letter in the line and add it to the row
@@ -253,9 +278,9 @@
 
         mazeContainer.appendChild(row);
     }
-    
+
     function getGuessFromCell(row, col) {
-        if(row === currentCoord.y) {
+        if (row === currentCoord.y) {
             return col > currentCoord.x ? '>' : '<';
         } else {
             return row > currentCoord.y ? 'v' : '^';

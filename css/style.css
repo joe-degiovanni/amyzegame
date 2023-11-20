@@ -59,6 +59,10 @@ h1, h2 {
     background-color: #050;
 }
 
+.validChoice {
+    opacity: 75%;
+}
+
 .wrong-down {
     border-bottom: 3px solid red !important;
 }
