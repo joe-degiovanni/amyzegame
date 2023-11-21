@@ -20,10 +20,6 @@
     .maze {
         max-width: 800px;
     }
-
-    #controls {
-        font-size: 2em;
-    }
 }
 
 body {
@@ -107,7 +103,16 @@ h1, h2 {
 
 #controls {
     text-align: center;
-    max-width: 500px;
     margin: auto;
+}
+
+#controls button {
+    font-size: 3em;
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
 }
     
