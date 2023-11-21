@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AMYZEGAME</title>
+    <title>AMYZEMAZE</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<h1>AMYZEGAME</h1>
+<h1>AMYZEMAZE</h1>
 <div id="main" class="maze">
     <div class="row">
         <div class="cell correct">a</div>
@@ -174,7 +174,7 @@
     function setShareContent() {
         let strikeCount = parseInt(document.getElementById('strike-count').innerText);
         let time = document.getElementById('timer').innerText;
-        let text = `I solved the amyzegame '${mazeName.replace(/\.\/mazes\/.*\//, '')}' maze in ${time} with ${strikeCount} strikes!`;
+        let text = `I solved amyzemaze '${mazeName.replace(/\.\/mazes\/.*\//, '')}' in ${time} with ${strikeCount} strikes!`;
         let emoji = strikeCount === 0 ? '🥳' : strikeCount === 1 ? '😎' : strikeCount === 2 ? '🙂' : strikeCount === 3 ? '😬' : strikeCount === 4 ? '😡' : '🤬';
         document.getElementById('share').innerText = text + emoji + `\n\nTry to beat me\n${document.URL}`;
         document.getElementById('share-button').setAttribute('style', 'visibility: visible');
