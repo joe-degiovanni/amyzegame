@@ -154,7 +154,7 @@
         [north, south, east, west].forEach(coord => {
             if(coord.x < 0 || coord.y < 0) return;
             let cell = document.getElementsByClassName('row')[coord.y].children[coord.x];
-            if (!cell.classList.contains('correct')) {
+            if (!!cell && !cell.classList.contains('correct')) {
                 cell.classList.add('validChoice');
             }
         });
