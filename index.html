@@ -153,7 +153,8 @@
         let west = new Coord((currentCoord.x - 1) + ', ' + currentCoord.y);
         [north, south, east, west].forEach(coord => {
             if(coord.x < 0 || coord.y < 0) return;
-            let cell = document.getElementsByClassName('row')[coord.y].children[coord.x];
+            let row = document.getElementsByClassName('row')[coord.y];
+            let cell = !!row ? row.children[coord.x] : null;
             if (!!cell && !cell.classList.contains('correct')) {
                 cell.classList.add('validChoice');
             }
