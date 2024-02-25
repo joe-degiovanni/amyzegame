@@ -54,7 +54,7 @@ h1, h2 {
 }
 
 .correct {
-    background-color: #050;
+    background:rgb(130, 187, 249);
 }
 
 .validChoice {
@@ -90,7 +90,7 @@ h1, h2 {
 }
 
 #selected {
-    background:rgb(130, 187, 249)
+    background:rgb(130, 187, 249);
 }
 
 #finish {
