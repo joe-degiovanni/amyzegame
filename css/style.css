@@ -94,7 +94,6 @@ h1, h2 {
 }
 
 #finish {
-    border: 2px dashed white !important;
     background:  repeating-linear-gradient(
             45deg,
             green,
