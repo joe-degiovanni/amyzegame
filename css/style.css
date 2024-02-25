@@ -96,10 +96,10 @@ h1, h2 {
 #finish {
     background:  repeating-linear-gradient(
             45deg,
-            green,
-            green 10px,
-            lime 10px,
-            lime 20px
+            rgb(95, 158, 95),
+            rgb(95, 158, 95) 10px,
+            rgb(87, 209, 87) 10px,
+            rgb(87, 209, 87) 20px
     );
 }
 
