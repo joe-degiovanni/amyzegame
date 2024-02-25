@@ -57,6 +57,7 @@ h1, h2 {
 
 .validChoice {
     opacity: 75%;
+    background-color: rgb(172, 207, 244);
 }
 
 .wrong-down {
@@ -87,7 +88,7 @@ h1, h2 {
 }
 
 #selected {
-    border: 2px dashed #808;
+    background:rgb(130, 187, 249)
 }
 
 #finish {
