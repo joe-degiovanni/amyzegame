@@ -25,7 +25,7 @@
 body {
     width: 100%;
     font-family: Lato, sans-serif;
-    background-color: black;
+    background-color: rgb(27, 22, 22);
     color: white;
 }
 
@@ -44,19 +44,22 @@ h1, h2 {
 .cell {
     text-align: center;
     flex: 5;
-    padding: 0px;
-    margin: 0px;
+    padding: 1px;
+    margin: 3px;
     background-color: #555;
     font-size: 1.6em;
     font-weight: bolder;
+    border-radius: 7px;
+    border: 3px;
 }
 
 .correct {
-    background-color: #050;
+    background:rgb(130, 187, 249);
 }
 
 .validChoice {
     opacity: 75%;
+    background-color: rgb(172, 207, 244);
 }
 
 .wrong-down {
@@ -87,17 +90,16 @@ h1, h2 {
 }
 
 #selected {
-    border: 2px dashed #808;
+    background:rgb(130, 187, 249);
 }
 
 #finish {
-    border: 2px dashed white !important;
     background:  repeating-linear-gradient(
             45deg,
-            green,
-            green 10px,
-            lime 10px,
-            lime 20px
+            rgb(95, 158, 95),
+            rgb(95, 158, 95) 10px,
+            rgb(87, 209, 87) 10px,
+            rgb(87, 209, 87) 20px
     );
 }
 
